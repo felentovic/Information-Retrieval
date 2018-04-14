@@ -1,6 +1,8 @@
+package indexcreation.preprocess;
+
 import org.tartarus.snowball.ext.EnglishStemmer;
 
-public class Stemmer implements PreprocessWord {
+public class Stemmer implements indexcreation.preprocess.PreprocessWord {
     private EnglishStemmer stemmer;
 
     public Stemmer() {
@@ -9,7 +11,7 @@ public class Stemmer implements PreprocessWord {
 
     @Override
     public String apply(String word) {
-        stemmer.setCurrent("cars");
+        stemmer.setCurrent(word);
 
         boolean stemResult = stemmer.stem();
 
