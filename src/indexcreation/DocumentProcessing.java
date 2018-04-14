@@ -42,7 +42,7 @@ public class DocumentProcessing {
 
     private boolean notWord(String word) {
         //match tags <TAG> <\TAG>
-        return word.length() == 0 || SpecialCharacter.isSpecialChar(word) || StopWords.isStopWord(word);
+        return word.length() == 0 || SpecialCharacter.isSpecialChar(word);
     }
 
     private String preprocessWordComposite(String token) {
