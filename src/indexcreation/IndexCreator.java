@@ -5,19 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class IndexCreator {
-    private TreeMap<String, LinkedList<Posting>> index;
+    private HashMap<String, LinkedList<Posting>> index;
     private String indexPath;
     private DocumentProcessing documentProcessing;
     private int indexSize;
@@ -27,7 +20,7 @@ public class IndexCreator {
     private Set<String> termSet;
 
     public IndexCreator(DocumentProcessing documentProcessing, String indexFolderPath, int indexSize) {
-        this.index = new TreeMap<>();
+        this.index = new HashMap<>();
         this.docIdWordCnt= new HashMap<>();
         this.docIdTermCnt= new HashMap<>();
         this.termSet = new HashSet<>();
@@ -54,6 +47,10 @@ public class IndexCreator {
     }
 
     public void dumpIndexToFile() throws IOException {
+        for(Map.Entry<String, LinkedList<Posting>> entry : index.entrySet()){
+            entry.getValue().sort((a,b)-> a.compareTo(b));
+        }
+
         FileOutputStream fout = new FileOutputStream(String.valueOf(Paths.get(indexPath, "index"+indexCounter+".sr")));
         ObjectOutputStream oos = new ObjectOutputStream(fout);
 
@@ -93,20 +90,10 @@ public class IndexCreator {
 
         if (postingList.isEmpty() || !postingList.peekLast().docID.equals(docId)) {
             postingList.add(new Posting(docId));
-            postingList.sort(new Comparator<Posting>() {
-    			@Override
-    			public int compare(Posting p1, Posting p2) {
-    				return p1.compareTo(p2);
-    			}
-    		});
+
         }else{
             postingList.peekLast().termFreq++;
-            postingList.sort(new Comparator<Posting>() {
-    			@Override
-    			public int compare(Posting p1, Posting p2) {
-    				return p1.compareTo(p2);
-    			}
-    		});
+
         }
 
 
