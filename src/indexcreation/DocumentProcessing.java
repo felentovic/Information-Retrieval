@@ -26,7 +26,7 @@ public class DocumentProcessing {
 
     }
 
-    private String[] processLineToTerms(String line) {
+    public String[] processLineToTerms(String line) {
         List<String> terms = new LinkedList<>();
 
         String[] tokens = tokenizer.tokenize(line);

@@ -70,5 +70,6 @@ public class Parser {
     public void close() throws IOException {
         indexCreator.dumpIndexToFile();
         indexCreator.dumpWordFreqToFile();
+        indexCreator.dumpTermFreqToFile();
     }
 }
