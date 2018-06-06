@@ -7,6 +7,7 @@ import indexcreation.Tokenizer;
 import indexcreation.preprocess.*;
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,35 @@ public class Main {
         for (int i = 401; i <= 450; i++) {
             topics.add(String.valueOf(i));
         }
+        
+        /*
+        //topics.add("401");
+        //topics.add("402");
+        topics.add("403");
+        topics.add("404");
+        topics.add("405");
+        topics.add("406");
+        topics.add("407");
+        topics.add("408");
+        //topics.add("409");
+
+        //topics.add("416");
+        //topics.add("417");
+        //topics.add("418");
+
+        topics.add("432");
+        //topics.add("433");
+        topics.add("434");
+        topics.add("438");
+        
+        topics.add("441");
+        //topics.add("442");
+        //topics.add("443");
+        //topics.add("444");
+        topics.add("445");
+        //topics.add("446");
+        topics.add("447");
+        */
 
         return topics;
     }
@@ -148,38 +178,84 @@ public class Main {
         String topicFileName = _topicFile;
 
         // params default values
-        double k1 = 1.2;
+        final double k1;
         if (_k1 != null) {
             k1 = Double.valueOf(_k1.trim()).doubleValue();
+        } else {
+        	k1 = 1.2;
         }
 
         // default
-        double k3 = 8;
+        final double k3;
         if (_k3 != null) {
             k3 = Double.valueOf(_k3.trim()).doubleValue();
+        } else {
+        	k3 = 8;
         }
 
         // default
-        double b = 0.75;
+        final double b;
         if (_b != null) {
             b = Double.valueOf(_b.trim()).doubleValue();
         }
+        else {
+        	b = 0.75;
+        }
 
         DocumentProcessing documentProcessing = new DocumentProcessing(tokenizer, preprocessWords);
-
         CosineScore cos = new CosineScore(documentProcessing, path2Topics, topicFileName, inputPathIndex, outputPathIndex);
+        
+        /*
         for (String topic : topics) {
             if (_function.trim().compareTo("BM25") == 0) {
+            	System.out.println("BM25");
+                //cos.cosineTfIdf(topic);
                 cos.cosineBM25(topic, k1, k3, b);
+                //cos.cosineBM25VA(topic, k1, k3);
             } else if (_function.trim().compareTo("BM25VA") == 0) {
+            	System.out.println("BM25VA");
+                //cos.cosineTfIdf(topic);
+                //cos.cosineBM25(topic, k1, k3, b);
                 cos.cosineBM25VA(topic, k1, k3);
             } else if (_function.trim().compareTo("TFIDF") == 0) {
+            	System.out.println("TFIDF");
                 cos.cosineTfIdf(topic);
+                //cos.cosineBM25(topic, k1, k3, b);
+                //cos.cosineBM25VA(topic, k1, k3);
             } else {
                 System.out.println("Function should be one of: TFIDF, BM25, BM25VA.\nExiting.");
                 System.exit(1);
             }
         }
+        */
+        
+            topics.stream().parallel().forEach(topic-> { if (_function.trim().compareTo("BM25") == 0) {
+                try {
+					cos.cosineBM25(topic, k1, k3, b);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            } else if (_function.trim().compareTo("BM25VA") == 0) {
+                try {
+					cos.cosineBM25VA(topic, k1, k3);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            } else if (_function.trim().compareTo("TFIDF") == 0) {
+                try {
+					cos.cosineTfIdf(topic);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            } else {
+                System.out.println("Function should be one of: TFIDF, BM25, BM25VA.\nExiting.");
+                System.exit(1);
+            }});       
+            
+            System.out.println("files written to output folder...");
     }
 
 }

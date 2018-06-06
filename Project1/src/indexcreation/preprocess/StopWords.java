@@ -5,8 +5,6 @@ import java.util.HashSet;
 
 public class StopWords implements PreprocessWord {
 
-
-
     private final String[] SET_VALUES = new String[]{"a", "an", "and", "are", "as", "at", "be", "but", "by",
             "for", "if", "in", "into", "is", "it",
             "no", "not", "of", "on", "or", "such",

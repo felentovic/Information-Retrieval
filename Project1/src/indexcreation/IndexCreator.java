@@ -17,13 +17,11 @@ public class IndexCreator {
     private int indexCounter;
     private Map<String, Integer> docIdWordCnt;
     private Map<String, Integer> docIdTermCnt;
-    private Set<String> termSet;
 
     public IndexCreator(DocumentProcessing documentProcessing, String indexFolderPath, int indexSize) {
         this.index = new HashMap<>();
         this.docIdWordCnt= new HashMap<>();
         this.docIdTermCnt= new HashMap<>();
-        this.termSet = new HashSet<>();
         this.indexPath = indexFolderPath;
         this.documentProcessing = documentProcessing;
         this.indexSize = indexSize;
@@ -34,7 +32,9 @@ public class IndexCreator {
         documentProcessing.setTextStream(textStream);
         Stream<String[]> termsStream = documentProcessing.getTermStream();
 
+        Set<String> termSet = new HashSet<>();
         AtomicInteger wordCount = new AtomicInteger();
+
         termsStream.forEach(terms -> {for (String term : terms) {
                 wordCount.addAndGet(terms.length);
                 addToIndex(docId, term);
@@ -44,6 +44,7 @@ public class IndexCreator {
         //save wordcount
         docIdWordCnt.put(docId,wordCount.get());
         docIdTermCnt.put(docId, termSet.size());
+        termSet.clear();
     }
 
     public void dumpIndexToFile() throws IOException {
@@ -57,18 +58,24 @@ public class IndexCreator {
         oos.writeObject(index);
         indexCounter++;
         index.clear();
+        oos.close();
+        fout.close();
     }
 
     public void dumpWordFreqToFile() throws IOException {
         FileOutputStream  fout = new FileOutputStream(String.valueOf(Paths.get(indexPath, "wordFreq.sr")));
         ObjectOutputStream oos = new ObjectOutputStream(fout);
         oos.writeObject(docIdWordCnt);
+        oos.close();
+        fout.close();        
     }
 
     public void dumpTermFreqToFile() throws IOException {
         FileOutputStream  fout = new FileOutputStream(String.valueOf(Paths.get(indexPath, "termFreq.sr")));
         ObjectOutputStream oos = new ObjectOutputStream(fout);
         oos.writeObject(docIdTermCnt);
+        oos.close();
+        fout.close();        
     }
 
     private void addToIndex(String docId, String term)  {
@@ -97,5 +104,9 @@ public class IndexCreator {
         }
 
 
+    }
+
+    public Integer getIndexSize(){
+        return index.size();
     }
 }

@@ -69,8 +69,8 @@ public class Main {
 
         int counter = 1;
         for (Path file : files) {
-            System.out.println("Parsing " + counter++ + ". file:" + file.getFileName());
             parser.parse(file);
+            System.out.println("Parsed " + counter++ + ". file:" + file.getFileName()+". size:"+ indexCreator.getIndexSize());
         }
 
         parser.close();
@@ -92,7 +92,7 @@ public class Main {
         stemmer.setRequired(false);
         options.addOption(stemmer);
 
-        Option lemmatization = new Option("", "lemmatization", false, "Use of lemmatization ");
+        Option lemmatization = new Option("l", "lemmatization", false, "Use of lemmatization ");
         lemmatization.setRequired(false);
         options.addOption(lemmatization);
 
